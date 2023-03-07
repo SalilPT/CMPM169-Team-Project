@@ -4,13 +4,13 @@ let globalBoard;
 function setup() {
   createCanvas(500, 500);
   sidebar = new Sidebar();
-  globalBoard =  new Board();
+  globalBoard = new Board(400, 400, 10, 2);
 }
 
 function draw() {
   background(220);
   sidebar.display();
-  globalBoard.update()
+  globalBoard.update();
 }
 
 function mousePressed(event) {
@@ -25,9 +25,9 @@ function mousePressed(event) {
         && xRelativeToBoard >= 0 && xRelativeToBoard <= globalBoard.width
         && yRelativeToBoard >= 0 && yRelativeToBoard <= globalBoard.height) {
         // Round mouse position to the nearest grid coordinate
-        let gridX = floor((xRelativeToBoard) / cellWidth);
-        let gridY = floor((yRelativeToBoard) / cellHeight);
-        globalBoard.queuedCells.push(new Cell(gridX, gridY, globalSidePanel.selectedCellType, {explosionTimeLeft: 3}));
+        let gridX = floor((xRelativeToBoard) / globalBoard.cellWidth);
+        let gridY = floor((yRelativeToBoard) / globalBoard.cellWidth);
+        globalBoard.queuedCells.push(new Cell({x: gridX, y: gridY}, globalSidePanel.selectedCellType, {explosionTimeLeft: 3}));
     }
 }
 

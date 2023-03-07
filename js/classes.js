@@ -3,6 +3,8 @@ class Board {
         this.width = width;
         this.height = height;
         this.cellWidth = cellWidth;
+        this.widthInCells = floor(width / cellWidth);
+        this.heightInCells = floor(height / cellWidth);
         this.updateRate = updateRate;
         this.updateRateCounter = 0;
         this.isPaused = true;
@@ -17,7 +19,10 @@ class Board {
     }
 
     getCellAt(x,y) {
-        return this.cellGrid[x][y];
+        // Wrap values around to be in range
+        let xCoord = x >= 0 ? x % this.widthInCells : (this.widthInCells - 1) - ((-x - 1) % this.widthInCells);
+        let yCoord = y >= 0 ? y % this.heightInCells : (this.heightInCells - 1) - ((-y - 1) % this.heightInCells);
+        return this.cellGrid[xCoord][yCoord];
     }
 
     setCell(x,y,type) {
@@ -39,8 +44,8 @@ class Board {
     // builds and and returns a 2d array of cells
     build2dCellArr() {
         let newGrid = [];
-        for(let i = 0; i < this.width; i++){
-            let row = new Array(this.height);
+        for(let i = 0; i < this.widthInCells; i++){
+            let row = new Array(this.heightInCells);
             for (let j = 0; j < row.length; j++){
                 row[j] = new Cell();
             }
@@ -53,7 +58,7 @@ class Board {
         // check it is paused and in the correct update cycle based on update rate
         if (!this.isPaused && (this.updateRateCounter % this.updateRate == 0)) {
             // loop through this.cellGrid and call update for each cell
-            for(let i = 0; i < this.width; i++){
+            for(let i = 0; i < this.widthInCells; i++){
                 for (let j = 0; j < this.cellGrid[i].length; j++){
                     this.cellGrid[i][j].update();
                 }
@@ -64,7 +69,7 @@ class Board {
             }
             this.queuedCells = [];
             // draw each cell in the next grid
-            for(let i = 0; i < this.width; i++){
+            for(let i = 0; i < this.widthInCells; i++){
                 for (let j = 0; j < this.nextCellGrid[i].length; j++){
                     this.nextCellGrid[i][j].draw();
                 }
@@ -81,9 +86,9 @@ class Board {
 class Cell {
     constructor(coords, type, board, stats) {
         this.coords = coords;
-        this.coords = type; // enum? normal, minePlacing, lifePlacing, lifeSeed, mine, explosion, DEAD
-        this.coords = board;
-        this.coords = stats; // set stats.explosionTimeLeft to 3
+        this.type = type; // enum? normal, minePlacing, lifePlacing, lifeSeed, mine, explosion, DEAD
+        this.board = board;
+        this.stats = stats; // set stats.explosionTimeLeft to 3
     }
 
     getNeighboringCells() {
