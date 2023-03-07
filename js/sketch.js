@@ -30,3 +30,8 @@ function mousePressed(event) {
         globalBoard.queuedCells.push(new Cell(gridX, gridY, globalSidePanel.selectedCellType, {explosionTimeLeft: 3}));
     }
 }
+
+function mouseClicked() {
+    sidebar.handleMouseClick();
+}
+  
