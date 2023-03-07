@@ -3,14 +3,14 @@ let globalBoard;
 
 function setup() {
   createCanvas(500, 500);
-  //sidebar = new Sidebar();
-  //globalBoard =  new Board();
+  sidebar = new Sidebar();
+  globalBoard =  new Board();
 }
 
 function draw() {
   background(220);
-  //sidebar.display();
-  //globalBoard.update()
+  sidebar.display();
+  globalBoard.update()
 }
 
 function mousePressed(event) {
