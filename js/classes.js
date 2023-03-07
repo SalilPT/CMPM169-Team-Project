@@ -55,7 +55,7 @@ class Board {
             // loop through this.cellGrid and call update for each cell
             for(let i = 0; i < this.width; i++){
                 for (let j = 0; j < this.cellGrid[i].length; j++){
-                    this.cellGrid[x][y].update();
+                    this.cellGrid[i][j].update();
                 }
             }
             // loop over this.queuedCells array and assign to given position in next grid
@@ -66,7 +66,7 @@ class Board {
             // draw each cell in the next grid
             for(let i = 0; i < this.width; i++){
                 for (let j = 0; j < this.nextCellGrid[i].length; j++){
-                    this.nextCellGrid[x][y].draw();
+                    this.nextCellGrid[i][j].draw();
                 }
             }
             // assign current grid to be the next cell grid
