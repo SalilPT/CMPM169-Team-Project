@@ -36,7 +36,7 @@ class Board {
         this.isPaused = true;
     }
 
-    // builds and pushes rows of a 2d array for the given array
+    // builds and and returns a 2d array
     build2dCellArr() {
         let newGrid = [];
         for(let i = 0; i < this.width; i++){
