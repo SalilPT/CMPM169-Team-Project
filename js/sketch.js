@@ -25,3 +25,8 @@ function mousePressed(event) {
         });
     }
 }
+
+function mouseClicked() {
+    sidebar.handleMouseClick();
+}
+  
