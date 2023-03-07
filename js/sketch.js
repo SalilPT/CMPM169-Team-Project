@@ -27,10 +27,6 @@ function mousePressed(event) {
         // Round mouse position to the nearest grid coordinate
         let gridX = floor((xRelativeToBoard) / cellWidth);
         let gridY = floor((yRelativeToBoard) / cellHeight);
-        globalBoard.queuedCells.push({
-            x: gridX,
-            y: gridY,
-            type: globalSidePanel.selectedCellType
-        });
+        globalBoard.queuedCells.push(new Cell(gridX, gridY, globalSidePanel.selectedCellType, {explosionTimeLeft: 3}));
     }
 }
