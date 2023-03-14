@@ -1,7 +1,29 @@
+let globalSidePanel;
+let globalBoard;
+let updateRateSlider;
+
 function setup() {
-}
+    createCanvas(500, 500);
+    rectMode(CORNER);
+
+    globalSidePanel = new SidePanel();
+    globalBoard = new Board(400, 400, 10, 4);
+
+    updateRateSlider = createSlider(1, 50, 10, 5);
+    updateRateSlider.position(40, 450);
+    
+}   
 
 function draw() {
+    background(220);
+    globalSidePanel.display();
+    globalBoard.update();
+    
+    globalBoard.updateRate = updateRateSlider.value();
+
+    fill(0); // slider label
+    textSize(16);
+    text("Speed", 60, 425);
 }
 
 function mousePressed(event) {
