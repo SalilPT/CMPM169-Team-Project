@@ -3,7 +3,7 @@ let globalBoard;
 let updateRateSlider;
 
 function setup() {
-    createCanvas(500, 500);
+    createCanvas(1000, 1000);
     rectMode(CORNER);
 
     globalSidePanel = new SidePanel();

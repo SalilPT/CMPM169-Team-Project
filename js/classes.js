@@ -294,10 +294,11 @@ class Cell {
 
 class SidePanel {
     constructor() {
-        this.selectableCellTypes = ["normal", "minePlacing", "lifePlacing", "mine", "lifeSeed", "Pause/\nPlay"];
+        this.buttonTextArray = ["Normal", "Dead", "Mine-Placing", "Life-Placing", "Mine", "Life Seed", "Explosion", "Pause / Play"]
+        this.selectableCellTypes = ["normal", "dead", "minePlacing", "lifePlacing", "mine", "lifeSeed", "explosion", "Pause / Play"];
         this.selectedCellType = "normal";
 
-        this.buttonWidth = 75;
+        this.buttonWidth = 150;
         this.buttonHeight = 50;
         this.x = width - this.buttonWidth;
         this.y = 0;
@@ -308,7 +309,7 @@ class SidePanel {
         fill(200);
         rect(this.x, this.y, this.buttonWidth, height);
 
-        for (let i = 0; i < this.selectableCellTypes.length; i++) {
+        for (let i = 0; i < this.buttonTextArray.length; i++) {
             let buttonX = this.x;
             let buttonY = i * this.buttonHeight;
 
@@ -317,7 +318,7 @@ class SidePanel {
             fill(0);
             textAlign(CENTER, CENTER);
             textSize(16);
-            text(this.selectableCellTypes[i], buttonX + this.buttonWidth / 2, buttonY + this.buttonHeight / 2);
+            text(this.buttonTextArray[i], buttonX + this.buttonWidth / 2, buttonY + this.buttonHeight / 2);
         }
     }
 
@@ -325,17 +326,18 @@ class SidePanel {
         // conditionals to detect which button is being clicked
         if (mouseX >= this.x && mouseX <= this.x + this.buttonWidth) {
             let buttonIndex = floor((mouseY - this.y) / this.buttonHeight);
-            if (buttonIndex >= 0 && buttonIndex < this.selectableCellTypes.length) {
+            if (buttonIndex < 0 || buttonIndex >= this.buttonTextArray.length) {
+                return;
+            }
 
             // if pressing the pause button
-                if (this.selectableCellTypes[buttonIndex] == "Pause/\nPlay") {
-                    this.pauseOrPlay();
-                } else {
-                    // otherwise, set property to a cell
-                    this.setSelectedType(this.selectableCellTypes[buttonIndex]);
-                    console.log(this.selectedCellType + " selected");
-                }
-
+            if (this.buttonTextArray[buttonIndex] == "Pause / Play") {
+                this.pauseOrPlay();
+            }
+            else {
+                // otherwise, set property to a cell
+                this.setSelectedType(this.selectableCellTypes[buttonIndex]);
+                console.log(this.selectedCellType + " selected");
             }
         }
     }
