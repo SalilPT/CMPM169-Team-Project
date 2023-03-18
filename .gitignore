@@ -1,4 +1,4 @@
-#.gitignore file from https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
+#.gitignore file adapted from https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
 
 .vscode/*
 !.vscode/settings.json
@@ -12,3 +12,5 @@
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+.DS_Store
