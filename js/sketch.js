@@ -37,6 +37,14 @@ function mousePressed(event) {
     }
 }
 
+function mouseDragged(event) {
+    let mouseInfo = getMouseInfoFromEvent(event);
+
+    if (mouseInfo.mouseIsOverBoard) {
+        globalBoard.queuedCells.push(new Cell({x: mouseInfo.gridX, y: mouseInfo.gridY}, globalSidePanel.selectedCellType, globalBoard, {explosionTimeLeft: 3}));
+    }
+}
+
 function mouseClicked() {
     globalSidePanel.handleMouseClick();
 }
