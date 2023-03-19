@@ -106,15 +106,15 @@ class Board {
 }
 
 class Cell {
+    static CELL_COLORS;
+
     constructor(coords, type, board, stats) {
         this.coords = coords;
         this.type = type; // enum? normal, minePlacing, lifePlacing, lifeSeed, mine, explosion, DEAD
         this.board = board;
         this.stats = stats; // set stats.explosionTimeLeft to 3
-    }
 
-    draw() {
-        let cellColors = {
+        Cell.CELL_COLORS = {
             "dead": color(0),
             "normal": color(255),
             "minePlacing": color("yellow"),
@@ -122,9 +122,11 @@ class Cell {
             "mine": color(64),
             "lifeSeed": color("pink"),
             "explosion": color("orange")
-        }
+        };
+    }
 
-        fill(cellColors[this.type]);
+    draw() {
+        fill(Cell.CELL_COLORS[this.type]);
         let cellWidth = this.board.cellWidth;
         rect((this.coords.x * cellWidth), (this.coords.y * cellWidth), cellWidth);
     }
