@@ -333,7 +333,7 @@ class SidePanel {
     constructor() {
         this.buttonTextArray = ["Normal", "Dead", "Mine-Placing", "Life-Placing", "Mine", "Life Seed", "Explosion", "Pause / Play"];
         this.selectableCellTypes = ["normal", "dead", "minePlacing", "lifePlacing", "mine", "lifeSeed", "explosion", "Pause / Play"];
-        this.iconColors = ["#FFFFFF","#000000","yellow","green","64", "pink", "orange"];
+        this.iconColors = ["#FFFFFF","#000000","yellow","green", 64, "pink", "orange"];
         this.buttonToolTipsText = [
             "Normal Cell:\n\n True to Conway's original Game of Life rules. Treats mine-placing cells and life-placing cells as neighbors.",
             "Dead Cell:\n\n Can become a normal, mine-placing, or life-placing cell based on its neighbors. Stays a dead cell if it doesn't have 3 or 4 neighbors. " + 
