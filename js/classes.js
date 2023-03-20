@@ -454,7 +454,6 @@ class SidePanel {
                 }
                 // otherwise, set property to a cell
                 this.setSelectedType(this.selectableCellTypes[buttonIndex]);
-                console.log(this.selectedCellType + " selected");
             }
         }
     }
