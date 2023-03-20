@@ -1,8 +1,7 @@
 let globalSidePanel;
 let globalBoard;
-let updateRateSlider;
 
-let drawCellHighlight = () => {}; // anonymous function
+let globalDrawCellHighlight = () => {};
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
@@ -11,11 +10,6 @@ function setup() {
 
     globalSidePanel = new SidePanel();
     globalBoard = new Board(width * 0.7, height * 0.98, 10, 10);
-
-    updateRateSlider = createSlider(1, 20, 10);
-    updateRateSlider.size(width / 10); // scale according to window size
-    updateRateSlider.position(width - (updateRateSlider.size().width + width / 8), height - (height / 4));
-    
 }
 
 function draw() {
@@ -24,13 +18,7 @@ function draw() {
     globalBoard.update();
     globalSidePanel.display();
 
-    drawCellHighlight();
-
-    globalBoard.updateRate = updateRateSlider.value();
-
-    fill(255); // slider label
-    textSize(16);
-    text("Speed", updateRateSlider.position().x * 1.03, updateRateSlider.position().y * 0.95);
+    globalDrawCellHighlight();
 }
 
 function mousePressed(event) {
@@ -46,6 +34,7 @@ function mouseDragged(event) {
 
     if (mouseInfo.mouseIsOverBoard) {
         globalBoard.queuedCells.push(new Cell({x: mouseInfo.gridX, y: mouseInfo.gridY}, globalSidePanel.selectedCellType, globalBoard, {explosionTimeLeft: 3}));
+        globalDrawCellHighlight = () => {};
     }
 }
 
@@ -67,7 +56,7 @@ function mouseMoved(event) {
     let mouseInfo = getMouseInfoFromEvent(event);
 
     if (!mouseInfo.mouseIsOverBoard) {
-        drawCellHighlight = () => {};
+        globalDrawCellHighlight = () => {};
         return;
     }
 
@@ -75,7 +64,7 @@ function mouseMoved(event) {
     let highlightColor = color(cellColor.toString()); // Make a new color object
     highlightColor.setAlpha(184);
     let cellWidth = globalBoard.cellWidth;
-    drawCellHighlight = () => {
+    globalDrawCellHighlight = () => {
         fill(highlightColor);
         rect((mouseInfo.gridX * cellWidth), (mouseInfo.gridY * cellWidth), cellWidth);
     };

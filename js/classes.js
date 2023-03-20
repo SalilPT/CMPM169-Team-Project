@@ -55,6 +55,15 @@ class Board {
         return newGrid;
     }
 
+    placeQueuedCells(useNextGrid = false) {
+        // loop over this.queuedCells array and assign to given position in target grid
+        let targetGrid = useNextGrid ? this.nextCellGrid : this.cellGrid;
+        for(let i = 0; i < this.queuedCells.length; i++){
+            targetGrid[this.queuedCells[i].coords.x][this.queuedCells[i].coords.y] = this.queuedCells[i];
+        }
+        this.queuedCells = [];
+    }
+
     update() {
         // check it is paused and in the correct update cycle based on update rate
         if (!this.isPaused && (this.updateRateCounter % this.updateRate == 0)) {
@@ -64,11 +73,7 @@ class Board {
                     this.cellGrid[i][j].update();
                 }
             }
-            // loop over this.queuedCells array and assign to given position in next grid
-            for(let i = 0; i < this.queuedCells.length; i++){
-                this.nextCellGrid[this.queuedCells[i].coords.x][this.queuedCells[i].coords.y] = this.queuedCells[i];
-            }
-            this.queuedCells = [];
+            this.placeQueuedCells(true);
             // draw each cell in the next grid
             for(let i = 0; i < this.widthInCells; i++){
                 for (let j = 0; j < this.nextCellGrid[i].length; j++){
@@ -81,11 +86,7 @@ class Board {
             this.nextCellGrid = this.build2dCellArr();
         }
         else if (this.isPaused) {
-            // loop over this.queuedCells array and assign to given position in next grid
-            for(let i = 0; i < this.queuedCells.length; i++){
-                this.cellGrid[this.queuedCells[i].coords.x][this.queuedCells[i].coords.y] = this.queuedCells[i];
-            }
-            this.queuedCells = [];
+            this.placeQueuedCells();
             // draw each cell in the current grid
             for(let i = 0; i < this.widthInCells; i++){
                 for (let j = 0; j < this.cellGrid[i].length; j++){
@@ -94,6 +95,7 @@ class Board {
             }
         }
         else if ((this.updateRateCounter % this.updateRate != 0)) {
+            this.placeQueuedCells();
             // draw each cell in the current grid
             for(let i = 0; i < this.widthInCells; i++){
                 for (let j = 0; j < this.cellGrid[i].length; j++){
@@ -357,12 +359,16 @@ class SidePanel {
         this.toolTipsY = this.y;
         this.ToolTipsW = this.buttonWidth*2;
         this.ToolTipsH =  this.buttonHeight*3;
+        this.bottomOfLowestButton = new p5.Vector();
+        this.SLIDER_MAX_VALUE = 30;
+        this.SLIDER_MIN_VALUE = 1;
+        this.updateRateSlider = createSlider(this.SLIDER_MIN_VALUE, this.SLIDER_MAX_VALUE, lerp(this.SLIDER_MIN_VALUE, this.SLIDER_MAX_VALUE, 0.5), 1);
+        this.updateRateSlider.size(this.buttonWidth);
     }
 
     display() {
         noStroke();
         fill(220);
-        //rect(this.x, this.y, this.buttonWidth, height, 10);
 
         for (let i = 0; i < this.buttonTextArray.length; i++) {
             fill("#A7BBEC");
@@ -377,6 +383,9 @@ class SidePanel {
             // if pause/play move it farther down
             if (this.buttonTextArray[i] == "Pause / Play") {
                 buttonY += this.buttonHeight;
+                
+                this.bottomOfLowestButton.x = buttonX + this.buttonWidth / 2; // Centered with buttons
+                this.bottomOfLowestButton.y = buttonY + this.buttonHeight;
             }
 
             // draw button boxes, if selected draw it with different border
@@ -417,6 +426,13 @@ class SidePanel {
                 text(this.buttonToolTipsText[i], this.toolTipsX, this.toolTipsY, this.ToolTipsW, this.ToolTipsH);
             }
         }
+
+        textAlign(CENTER, TOP);
+        fill(255); // slider label
+        textSize(16);
+        text("Speed", this.bottomOfLowestButton.x, this.bottomOfLowestButton.y + textSize() / 2);
+        this.updateRateSlider.position(this.bottomOfLowestButton.x - this.updateRateSlider.size().width / 2, this.bottomOfLowestButton.y + textSize() * 2);
+        globalBoard.updateRate = this.SLIDER_MAX_VALUE - this.updateRateSlider.value() + this.SLIDER_MIN_VALUE;
     }
 
     handleMouseClick() {
@@ -438,7 +454,6 @@ class SidePanel {
                 }
                 // otherwise, set property to a cell
                 this.setSelectedType(this.selectableCellTypes[buttonIndex]);
-                console.log(this.selectedCellType + " selected");
             }
         }
     }
