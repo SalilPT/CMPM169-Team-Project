@@ -333,15 +333,17 @@ class SidePanel {
     constructor() {
         this.buttonTextArray = ["Normal", "Dead", "Mine-Placing", "Life-Placing", "Mine", "Life Seed", "Explosion", "Pause / Play"];
         this.selectableCellTypes = ["normal", "dead", "minePlacing", "lifePlacing", "mine", "lifeSeed", "explosion", "Pause / Play"];
-        this.iconColors = ["#FFFFFF","#000000","yellow","green","64", "pink", "orange"];
+        this.iconColors = ["#FFFFFF","#000000","yellow","green", 64, "pink", "orange"];
         this.buttonToolTipsText = [
-            "Normal Cell:\n\n True to Conway's original game of life rules.",
-            "Dead State Cell:\n\n Can be used to clear placed cells on the board.",
-            "Mine-placing Cell:\n\n Special cell variation that places mines once it dies from overpopulation.",
-            "Life-Placing Cell:\n\n Special cell variation that places life seeds once it dies from underpopulation.",
-            "Mine Cell:\n\n Cell type that blows up once it's triggered, detroying cells in its vicinity.",
-            "Life-Seed Cell:\n\n Cell type that spawns normal cells once it's triggered.",
-            "Explosion State Cell:\n\n Cell type that will soon perish due to a mine explosion.",
+            "Normal Cell:\n\n True to Conway's original Game of Life rules. Treats mine-placing cells and life-placing cells as neighbors.",
+            "Dead Cell:\n\n Can become a normal, mine-placing, or life-placing cell based on its neighbors. Stays a dead cell if it doesn't have 3 or 4 neighbors. " + 
+            "If it has 4 neighbors and the number of mine-placing neighbors is >= the number of life-placing neighbors, it becomes a mine-placing cell; otherwise, it stays dead. " +
+            "If it has 3 neighbors and the number of mine-placing neighbors is >= the number of life-placing neighbors, it becomes a mine-placing cell; otherwise, it becomes a life-placing cell.",
+            "Mine-Placing Cell:\n\n Special cell variation that places a mine if it has at least 5 neighbors.",
+            "Life-Placing Cell:\n\n Special cell variation that places a life seed if it dies from underpopulation.",
+            "Mine Cell:\n\n Cell type that blows up if it has 2 or 3 neighboring cells, converting all of its neighboring cells and itself into explosion cells.",
+            "Life Seed Cell:\n\n Cell type that spawns a plus shape of life-placing cells if it has 0 or 3 neighboring cells.",
+            "Explosion Cell:\n\n Cell type that lasts 3 board updates once spawned. Represents an explosion that dissipates over time.",
             "Play/Pause:\n\n Play or pause the simulation."
         ];
 
