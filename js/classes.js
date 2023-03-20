@@ -312,8 +312,8 @@ class SidePanel {
 
         this.selectedCellType = "normal";
 
-        this.buttonWidth = 150;
-        this.buttonHeight = 50;
+        this.buttonWidth = 200;
+        this.buttonHeight = 75;
         this.x = width - this.buttonWidth;
         this.y = 0;
         this.toolTipsX = this.x - this.buttonWidth*2;
@@ -324,11 +324,11 @@ class SidePanel {
 
     display() {
         noStroke();
-        fill("#222255");
-        rect(this.x, this.y, this.buttonWidth, height, 10);
+        fill(220);
+        //rect(this.x, this.y, this.buttonWidth, height, 10);
 
         for (let i = 0; i < this.buttonTextArray.length; i++) {
-            fill("#A7BBEC");
+            fill("#E1E5EE");
             stroke("#020202");
             strokeWeight(2);
             textAlign(CENTER, CENTER);
@@ -346,7 +346,7 @@ class SidePanel {
             if (this.selectedCellType == this.selectableCellTypes[i]) {
                 push();
                 strokeWeight(5);
-                stroke("#F0F7F4");
+                stroke("#2A324B");
                 rect(buttonX + 3, buttonY + 3, this.buttonWidth - 6, this.buttonHeight - 3, 10);
                 pop();
             } else { 
@@ -371,8 +371,9 @@ class SidePanel {
             // draw tool tip if mouse is hovering over a button
             rectMode(CORNER);
             if (this.isMouseHovering(buttonX, buttonY, this.buttonWidth, this.buttonHeight)) {
+                stroke("#020202");
                 strokeWeight(2);
-                fill("#FFFFFFF8");
+                fill("#E1E5EEF0");
                 rect(this.toolTipsX, this.toolTipsY, this.ToolTipsW, this.ToolTipsH, 10);
                 fill("#000000");
                 noStroke();
