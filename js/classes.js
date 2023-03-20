@@ -167,123 +167,158 @@ class Cell {
         // Count the number of neighboring cells of type “normal”, “life-placing”, and “mine-placing”, and let that number be n.
         let neighbors = this.getNeighboringCells();
         let totalNeighbors = 0; // total number of cells
-        let bombNeighbors = 0;
-        let lifeNeighbors = 0;
+        let minePlacingNeighbors = 0;
+        let lifePlacingNeighbors = 0;
         for (let i = 0; i < 8; i++) {
             let neighbor = neighbors[i];
-            if (neighbor.type == "normal" || neighbor.type == "minePlacing" || neighbor.type == "lifePlacing") {
-                totalNeighbors++;
-                if (neighbor.type == "minePlacing") {
-                    bombNeighbors++;
-                } else if (neighbor.type == "lifePlacing") {
-                    lifeNeighbors++;
-                }
+            if (!(["normal", "minePlacing", "lifePlacing"].includes(neighbor.type))) {
+                continue;
+            }
+            totalNeighbors++;
+            if (neighbor.type == "minePlacing") {
+                minePlacingNeighbors++;
+            }
+            if (neighbor.type == "lifePlacing") {
+                lifePlacingNeighbors++;
             }
         }
-        // If this is a dead cell, first check if it’s already set to be a cell in the following board state. If so, skip the remaining update procedure for this cell type.
-        // If not, then first check the surrounding eight cells for any mine-placing or life-placing cells. If n1 or n4, keep this cell dead for the next board state.
-        // If there are no life-placing or mine-placing cells, then update this cell in the same way as one would in Conway’s Game of Life (using normal cells).
-        // Otherwise, see if there’s any life-placing cells in the neighboring cells. Count the number of life-placing cells and mine-placing cells in the neighboring cells. If the number of life-placing cells and number of mine-placing cells are unequal, set this cell to be type with more surrounding it (e.g. two mine-placing and one life-placing neighbors means the dead cell becomes a mine-placing cell). If the number of life-placing and mine-placing cells are equal, set this dead cell to be a normal cell
-        if (this.type == "dead") {
-            // look up self in nextCells array?
-            if (this.lookUpNext() != "normal" && this.lookUpNext() != "minePlacing" && this.lookUpNext() != "lifePlacing") {
-                // this cell hasn't been set yet
-                if (totalNeighbors <= 1 || totalNeighbors >= 4) {
+
+        if (this.lookUpNext() == "explosion") {
+            return;
+        }
+
+        switch (this.type) {
+            case "dead":
+                // If this is a dead cell, first check if it’s already set to be a cell in the following board state. If so, skip the remaining update procedure for this cell type.
+                // If not, then first check the surrounding eight cells for any mine-placing or life-placing cells. If n1 or n4, keep this cell dead for the next board state.
+                // If there are no life-placing or mine-placing cells, then update this cell in the same way as one would in Conway’s Game of Life (using normal cells).
+                // Otherwise, see if there’s any life-placing cells in the neighboring cells. Count the number of life-placing cells and mine-placing cells in the neighboring cells. If the number of life-placing cells and number of mine-placing cells are unequal, set this cell to be type with more surrounding it (e.g. two mine-placing and one life-placing neighbors means the dead cell becomes a mine-placing cell). If the number of life-placing and mine-placing cells are equal, set this dead cell to be a normal cell
+
+                // Check that this cell hasn't been set yet
+                if (this.lookUpNext() != "dead") {
+                    break;
+                }
+
+                if (totalNeighbors != 3 && totalNeighbors != 4) {
                     // this cell will still be dead next round
                     this.setNext("dead");
+                    break;
                 }
-                else if (totalNeighbors == 2) {
-                    this.setNext(this.type);
+
+                // Special case when totalNeighbors equals 4
+                if (totalNeighbors == 4) {
+                    if (minePlacingNeighbors > 0 && minePlacingNeighbors >= lifePlacingNeighbors) {
+                        this.setNext("minePlacing");
+                    }
+                    else {
+                        this.setNext("dead");
+                    }
+                    break;
                 }
+
+                // totalNeighbors equals 3
+                if (minePlacingNeighbors > 0 && minePlacingNeighbors >= lifePlacingNeighbors) {
+                    this.setNext("minePlacing");
+                }
+                else if (lifePlacingNeighbors > minePlacingNeighbors) {
+                    // this will be a life placing cell
+                    this.setNext("lifePlacing");
+                }
+                // Only normal cells
                 else {
-                    if (bombNeighbors > 0 || lifeNeighbors > 0) {
-                        if (bombNeighbors > lifeNeighbors) {
-                            // this will be a bomb placing cell
-                            this.setNext("minePlacing");
-                        } else if (lifeNeighbors > bombNeighbors) {
-                            // this will be a life placing cell
-                            this.setNext("lifePlacing");
-                        } else {
-                            // this will be a normal cell
-                            this.setNext("normal");
-                        }
-                    } else {
-                        // only normal neighbors
-                        // this will be a normal cell
-                        if (totalNeighbors == 3) {
-                            this.setNext("normal");
-                        }
-                    }
+                    // this will be a normal cell
+                    this.setNext("normal");
                 }
-            }
-        } else {
-
-            if (this.type == "normal" || this.type == "minePlacing" || this.type == "lifePlacing") {
-
-                // handle special cases
-                if (this.type == "lifePlacing" && totalNeighbors <= 1) {
-                    // If this cell is a life-placing cell, then count the number of neighbors just like in the original game.
-                    // If the number of neighboring cells is 0 or 1, set this cell to be a life seed if this cell isn’t set to be an explosion cell in the following board state.
-                    if (this.lookUpNext() != "explosion") {
-                        // this cell will be a life seed
-                        this.setNext("lifeSeed");
-                    }
-                } else if (this.type == "minePlacing" && totalNeighbors >= 5) {
-                    // If this cell is a mine-placing cell, then count the number of neighbors just like in the original game. If n<=5, set this cell to be a mine.
-
+                break;
+            case "normal":
+                // do base logic for all living cells
+                if (totalNeighbors <= 1 || totalNeighbors >= 4) {
+                    // this cell will be dead next round
+                    this.setNext("dead");
+                }
+                else if (totalNeighbors == 2 || totalNeighbors == 3) {
+                    this.setNext("normal");
+                }
+                break;
+            case "minePlacing":
+                // If this cell is a mine-placing cell, then count the number of neighbors just like in the original game. If n>=5, set this cell to be a mine.
+                if (totalNeighbors >= 5) {
                     // this cell will be a mine
                     this.setNext("mine");
-                } else {
-                    // neither of the above cases
-                    // do base logic for all living cells
-                    if (totalNeighbors <= 1 || totalNeighbors >= 4) {
-                        // this cell will be dead next round
-                        this.setNext("dead");
-                    }
-                    else if (totalNeighbors == 2 || totalNeighbors == 3) {
-                        this.setNext("normal");
-                    }
+                    break;
                 }
 
-            } else {
-                // this is a ground cell, not a living cell
-                if (this.type == "mine") {
-                    // If this is a mine cell and n=3, then turn this cell and many nearby cells to be of type “explosion”.
-                    if (totalNeighbors == 3) {
-                        // this cell will be an explosion
-                        this.setNext("explosion");
-                        // set all neighbors to also be explosions (3 x 3 AoE)
-                        for (let i = 0; i < 8; i++) {
-                            neighbors[i].setNext("explosion"); // NOTE: make sure explosionTimeLeft is getting set
-                            neighbors[i].stats.explosionTimeLeft = 3;
-                        }
-                    }
-                } else if (this.type == "lifeSeed") {
-                    // If this is a life seed cell and n=3, then make a plus shape of 5 life-placing cells centered on this cell,
-                    // overwriting cells of any type in the next board state except “explosion”. Shape: [[0,1,0],[1,1,1],[0,1,0]]
-                    if (totalNeighbors == 3) {
-                        // choose plus shape 5 cells to become life-placing type IF THEY AREN'T ALREADY EXPLOSION; overwrite all other types
-                        for (let i = 0; i < 8; i++) {
-                            if (i == 1 || i == 3 || i == 4 || i == 6) {
-                                // plus shape
-                                if (neighbors[i].lookUpNext() != "explosion") {
-                                    // not explosion
-                                    neighbors[i].setNext("lifePlacing");
-                                }
-                            }
-                        }
-                        this.setNext("lifePlacing"); // set self to life placing to complete plus shape
-                    }
-                } else {
-                    // If this is an explosion cell, then check its explosionTimeLeft stat. If it’s 0, then turn this cell into a dead cell.
-                    if (this.stats.explosionTimeLeft <= 0) {
-                        this.setNext("dead");
-                    } else {
-                        // Otherwise, keep this cell as an explosion cell, but decrement the explosionTimeLeft stat by 1.
-                        this.setNext("explosion", {explosionTimeLeft: this.stats.explosionTimeLeft - 1});
-                    }
+                if (totalNeighbors <= 1 || totalNeighbors >= 4) {
+                    // this cell will be dead next round
+                    this.setNext("dead");
                 }
-            }
+                else if (totalNeighbors == 2 || totalNeighbors == 3) {
+                    this.setNext("minePlacing");
+                }
+                break;
+            case "lifePlacing":
+                // If this cell is a life-placing cell, then count the number of neighbors just like in the original game.
+                // If the number of neighboring cells is 0 or 1, set this cell to be a life seed if this cell isn’t set to be an explosion cell in the following board state.
+                if (totalNeighbors <= 1 && this.lookUpNext() != "explosion") {
+                    // this cell will be a life seed
+                    this.setNext("lifeSeed");
+                    break;
+                }
+
+                if (totalNeighbors <= 1 || totalNeighbors >= 4) {
+                    // this cell will be dead next round
+                    this.setNext("dead");
+                }
+                else if (totalNeighbors == 2 || totalNeighbors == 3) {
+                    this.setNext("normal");
+                }
+                break;
+            case "mine":
+                if (totalNeighbors == 2 || totalNeighbors == 3) {
+                    // this cell will be an explosion
+                    this.setNext("explosion");
+                    // set all neighbors to also be explosions (3 x 3 AoE)
+                    for (let i = 0; i < 8; i++) {
+                        neighbors[i].setNext("explosion", {explosionTimeLeft: 3}); // NOTE: make sure explosionTimeLeft is getting set
+                    }
+                    break;
+                }
+
+                // This mine hasn't been set off
+                this.setNext("mine");
+                break;
+            case "lifeSeed":
+                // If this is a life seed cell and n=3, then make a plus shape of 5 life-placing cells centered on this cell,
+                // overwriting cells of any type in the next board state except “explosion”. Shape: [[0,1,0],[1,1,1],[0,1,0]]
+                if (totalNeighbors == 0 || totalNeighbors == 3) {
+                    // choose plus shape 5 cells to become life-placing type IF THEY AREN'T ALREADY EXPLOSION; overwrite all other types
+                    for (let i = 0; i < 8; i++) {
+                        // plus shape
+                        if (!([1, 3, 4, 6].includes(i))) {
+                            continue;
+                        }
+
+                        if (neighbors[i].lookUpNext() == "explosion") {
+                            continue;
+                        }
+                        // not explosion
+                        neighbors[i].setNext("lifePlacing");
+                    }
+                    this.setNext("lifePlacing"); // set self to life placing to complete plus shape
+                }
+                break;
+            case "explosion":
+                // If this is an explosion cell, then check its explosionTimeLeft stat. If it’s 0, then turn this cell into a dead cell.
+                if (this.stats.explosionTimeLeft <= 0) {
+                    this.setNext("dead");
+                }
+                else {
+                    // Otherwise, keep this cell as an explosion cell, but decrement the explosionTimeLeft stat by 1.
+                    this.setNext("explosion", {explosionTimeLeft: this.stats.explosionTimeLeft - 1});
+                }
+                break;
+            default:
+                throw new Error(this.type + "is an invalid cell type!");
         }
     }
 
