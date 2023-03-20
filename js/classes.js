@@ -314,7 +314,7 @@ class SidePanel {
 
         this.buttonWidth = 200;
         this.buttonHeight = 75;
-        this.x = width - this.buttonWidth;
+        this.x = width - this.buttonWidth - 30;
         this.y = 0;
         this.toolTipsX = this.x - this.buttonWidth*2;
         this.toolTipsY = this.y;
@@ -328,8 +328,8 @@ class SidePanel {
         //rect(this.x, this.y, this.buttonWidth, height, 10);
 
         for (let i = 0; i < this.buttonTextArray.length; i++) {
-            fill("#E1E5EE");
-            stroke("#020202");
+            fill("#A7BBEC");
+            stroke("#003249");
             strokeWeight(2);
             textAlign(CENTER, CENTER);
             rectMode(CORNER);
@@ -346,7 +346,7 @@ class SidePanel {
             if (this.selectedCellType == this.selectableCellTypes[i]) {
                 push();
                 strokeWeight(5);
-                stroke("#2A324B");
+                stroke("#E1E5EE");
                 rect(buttonX + 3, buttonY + 3, this.buttonWidth - 6, this.buttonHeight - 3, 10);
                 pop();
             } else { 
@@ -373,7 +373,7 @@ class SidePanel {
             if (this.isMouseHovering(buttonX, buttonY, this.buttonWidth, this.buttonHeight)) {
                 stroke("#020202");
                 strokeWeight(2);
-                fill("#E1E5EEF0");
+                fill("#A7BBECE0");
                 rect(this.toolTipsX, this.toolTipsY, this.ToolTipsW, this.ToolTipsH, 10);
                 fill("#000000");
                 noStroke();
