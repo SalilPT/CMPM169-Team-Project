@@ -323,9 +323,8 @@ class SidePanel {
     }
 
     display() {
-        push();
         noStroke();
-        fill("#CCDBDC");
+        fill("#222255");
         rect(this.x, this.y, this.buttonWidth, height, 10);
 
         for (let i = 0; i < this.buttonTextArray.length; i++) {
@@ -342,7 +341,7 @@ class SidePanel {
             if (this.selectedCellType == this.selectableCellTypes[i]) {
                 push();
                 strokeWeight(5);
-                stroke("#2F3061");
+                stroke("#F0F7F4");
                 rect(buttonX + 3, buttonY + 3, this.buttonWidth - 6, this.buttonHeight - 3, 10);
                 pop();
             } else { 
@@ -375,7 +374,6 @@ class SidePanel {
                 text(this.buttonToolTipsText[i], this.toolTipsX, this.toolTipsY, this.ToolTipsW, this.ToolTipsH);
             }
         }
-        pop();
     }
 
     handleMouseClick() {
