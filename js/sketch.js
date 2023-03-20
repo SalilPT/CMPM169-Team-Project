@@ -1,7 +1,7 @@
 let globalSidePanel;
 let globalBoard;
 
-let drawCellHighlight = () => {}; // anonymous function
+let globalDrawCellHighlight = () => {};
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
@@ -18,7 +18,7 @@ function draw() {
     globalBoard.update();
     globalSidePanel.display();
 
-    drawCellHighlight();
+    globalDrawCellHighlight();
 }
 
 function mousePressed(event) {
@@ -34,6 +34,7 @@ function mouseDragged(event) {
 
     if (mouseInfo.mouseIsOverBoard) {
         globalBoard.queuedCells.push(new Cell({x: mouseInfo.gridX, y: mouseInfo.gridY}, globalSidePanel.selectedCellType, globalBoard, {explosionTimeLeft: 3}));
+        globalDrawCellHighlight = () => {};
     }
 }
 
@@ -55,7 +56,7 @@ function mouseMoved(event) {
     let mouseInfo = getMouseInfoFromEvent(event);
 
     if (!mouseInfo.mouseIsOverBoard) {
-        drawCellHighlight = () => {};
+        globalDrawCellHighlight = () => {};
         return;
     }
 
@@ -63,7 +64,7 @@ function mouseMoved(event) {
     let highlightColor = color(cellColor.toString()); // Make a new color object
     highlightColor.setAlpha(184);
     let cellWidth = globalBoard.cellWidth;
-    drawCellHighlight = () => {
+    globalDrawCellHighlight = () => {
         fill(highlightColor);
         rect((mouseInfo.gridX * cellWidth), (mouseInfo.gridY * cellWidth), cellWidth);
     };
