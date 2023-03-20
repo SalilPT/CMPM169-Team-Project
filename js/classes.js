@@ -314,6 +314,11 @@ class SidePanel {
         for (let i = 0; i < this.buttonTextArray.length; i++) {
             let buttonX = this.x;
             let buttonY = i * this.buttonHeight;
+          
+            // if pause/play move it farther down
+            if (this.buttonTextArray[i] == "Pause / Play") {
+                buttonY += this.buttonHeight;
+            }
 
             fill(255);
             rect(buttonX + 3, buttonY + 3, this.buttonWidth - 6, this.buttonHeight - 3);
@@ -328,15 +333,19 @@ class SidePanel {
         // conditionals to detect which button is being clicked
         if (mouseX >= this.x && mouseX <= this.x + this.buttonWidth) {
             let buttonIndex = floor((mouseY - this.y) / this.buttonHeight);
-            if (buttonIndex < 0 || buttonIndex >= this.buttonTextArray.length) {
+            if (buttonIndex < 0 || buttonIndex >= (this.buttonTextArray.length + 1)) {
                 return;
             }
 
             // if pressing the pause button
-            if (this.buttonTextArray[buttonIndex] == "Pause / Play") {
+            if (this.buttonTextArray[buttonIndex - 1] == "Pause / Play") {
                 this.pauseOrPlay();
             }
             else {
+                // if pressing the space above pause/play return
+                if (buttonIndex == 7) {
+                    return;
+                }
                 // otherwise, set property to a cell
                 this.setSelectedType(this.selectableCellTypes[buttonIndex]);
                 console.log(this.selectedCellType + " selected");
