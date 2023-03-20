@@ -19,7 +19,7 @@ function setup() {
 }
 
 function draw() {
-    background(220);
+    background("#222255");
     //globalSidePanel.display();
     globalBoard.update();
     globalSidePanel.display();
@@ -28,7 +28,7 @@ function draw() {
 
     globalBoard.updateRate = updateRateSlider.value();
 
-    fill(0); // slider label
+    fill(255); // slider label
     textSize(16);
     text("Speed", updateRateSlider.position().x * 1.03, updateRateSlider.position().y * 0.95);
 }
