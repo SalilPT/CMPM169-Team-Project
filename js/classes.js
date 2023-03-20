@@ -55,6 +55,15 @@ class Board {
         return newGrid;
     }
 
+    placeQueuedCells(useNextGrid = false) {
+        // loop over this.queuedCells array and assign to given position in target grid
+        let targetGrid = useNextGrid ? this.nextCellGrid : this.cellGrid;
+        for(let i = 0; i < this.queuedCells.length; i++){
+            targetGrid[this.queuedCells[i].coords.x][this.queuedCells[i].coords.y] = this.queuedCells[i];
+        }
+        this.queuedCells = [];
+    }
+
     update() {
         // check it is paused and in the correct update cycle based on update rate
         if (!this.isPaused && (this.updateRateCounter % this.updateRate == 0)) {
@@ -64,11 +73,7 @@ class Board {
                     this.cellGrid[i][j].update();
                 }
             }
-            // loop over this.queuedCells array and assign to given position in next grid
-            for(let i = 0; i < this.queuedCells.length; i++){
-                this.nextCellGrid[this.queuedCells[i].coords.x][this.queuedCells[i].coords.y] = this.queuedCells[i];
-            }
-            this.queuedCells = [];
+            this.placeQueuedCells(true);
             // draw each cell in the next grid
             for(let i = 0; i < this.widthInCells; i++){
                 for (let j = 0; j < this.nextCellGrid[i].length; j++){
@@ -81,11 +86,7 @@ class Board {
             this.nextCellGrid = this.build2dCellArr();
         }
         else if (this.isPaused) {
-            // loop over this.queuedCells array and assign to given position in next grid
-            for(let i = 0; i < this.queuedCells.length; i++){
-                this.cellGrid[this.queuedCells[i].coords.x][this.queuedCells[i].coords.y] = this.queuedCells[i];
-            }
-            this.queuedCells = [];
+            this.placeQueuedCells();
             // draw each cell in the current grid
             for(let i = 0; i < this.widthInCells; i++){
                 for (let j = 0; j < this.cellGrid[i].length; j++){
@@ -94,6 +95,7 @@ class Board {
             }
         }
         else if ((this.updateRateCounter % this.updateRate != 0)) {
+            this.placeQueuedCells();
             // draw each cell in the current grid
             for(let i = 0; i < this.widthInCells; i++){
                 for (let j = 0; j < this.cellGrid[i].length; j++){
