@@ -5,14 +5,17 @@ let updateRateSlider;
 let drawCellHighlight = () => {}; // anonymous function
 
 function setup() {
-    let canvas = createCanvas(1000, 900);
+    createCanvas(windowWidth, windowHeight);
+
     rectMode(CORNER);
 
     globalSidePanel = new SidePanel();
-    globalBoard = new Board(800, 800, 10, 4);
+    globalBoard = new Board(width * 0.7, height * 0.98, 10, 10);
 
-    updateRateSlider = createSlider(1, 50, 10, 5);
-    updateRateSlider.position(40, height - updateRateSlider.size().height);
+    updateRateSlider = createSlider(1, 20, 10);
+    updateRateSlider.size(width / 10); // scale according to window size
+    updateRateSlider.position(width - (updateRateSlider.size().width + width / 8), height - (height / 4));
+    
 }
 
 function draw() {
@@ -27,7 +30,7 @@ function draw() {
 
     fill(0); // slider label
     textSize(16);
-    text("Speed", 60, updateRateSlider.position().y - 20);
+    text("Speed", updateRateSlider.position().x * 1.03, updateRateSlider.position().y * 0.95);
 }
 
 function mousePressed(event) {
@@ -48,6 +51,11 @@ function mouseDragged(event) {
 
 function mouseClicked() {
     globalSidePanel.handleMouseClick();
+}
+
+function windowResized() {
+    // resizeCanvas(windowWidth, windowHeight);
+
 }
 
 function mouseMoved(event) {
@@ -99,3 +107,4 @@ function getMouseInfoFromEvent(event) {
 
     return result;
 }
+
