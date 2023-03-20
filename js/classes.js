@@ -323,14 +323,14 @@ class SidePanel {
     }
 
     display() {
+        push();
         noStroke();
-        fill(200);
+        fill("#CCDBDC");
         rect(this.x, this.y, this.buttonWidth, height, 10);
 
-        push();
         for (let i = 0; i < this.buttonTextArray.length; i++) {
-            fill(255);
-            stroke(0);
+            fill("#A7BBEC");
+            stroke("#020202");
             strokeWeight(2);
             textAlign(CENTER, CENTER);
             rectMode(CORNER);
@@ -341,8 +341,8 @@ class SidePanel {
             // draw button boxes, if selected draw it with different border
             if (this.selectedCellType == this.selectableCellTypes[i]) {
                 push();
-                strokeWeight(4);
-                stroke("#6229AC");
+                strokeWeight(5);
+                stroke("#2F3061");
                 rect(buttonX + 3, buttonY + 3, this.buttonWidth - 6, this.buttonHeight - 3, 10);
                 pop();
             } else { 
