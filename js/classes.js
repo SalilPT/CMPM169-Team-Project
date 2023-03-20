@@ -296,32 +296,86 @@ class Cell {
 
 class SidePanel {
     constructor() {
-        this.buttonTextArray = ["Normal", "Dead", "Mine-Placing", "Life-Placing", "Mine", "Life Seed", "Explosion", "Pause / Play"]
+        this.buttonTextArray = ["Normal", "Dead", "Mine-Placing", "Life-Placing", "Mine", "Life Seed", "Explosion", "Pause / Play"];
         this.selectableCellTypes = ["normal", "dead", "minePlacing", "lifePlacing", "mine", "lifeSeed", "explosion", "Pause / Play"];
+        this.iconColors = ["#FFFFFF","#000000","yellow","green","64", "pink", "orange"];
+        this.buttonToolTipsText = [
+            "Normal Cell:\n\n True to Conway's original game of life rules.",
+            "Dead State Cell:\n\n Can be used to clear placed cells on the board.",
+            "Mine-placing Cell:\n\n Special cell variation that places mines once it dies from overpopulation.",
+            "Life-Placing Cell:\n\n Special cell variation that places life seeds once it dies from underpopulation.",
+            "Mine Cell:\n\n Cell type that blows up once it's triggered, detroying cells in its vicinity.",
+            "Life-Seed Cell:\n\n Cell type that spawns normal cells once it's triggered.",
+            "Explosion State Cell:\n\n Cell type that will soon perish due to a mine explosion.",
+            "Play/Pause:\n\n Play or pause the simulation."
+        ];
+
         this.selectedCellType = "normal";
 
         this.buttonWidth = 150;
         this.buttonHeight = 50;
         this.x = width - this.buttonWidth;
         this.y = 0;
+        this.toolTipsX = this.x - this.buttonWidth*2;
+        this.toolTipsY = this.y;
+        this.ToolTipsW = this.buttonWidth*2;
+        this.ToolTipsH =  this.buttonHeight*3;
     }
 
     display() {
         noStroke();
         fill(200);
-        rect(this.x, this.y, this.buttonWidth, height);
+        rect(this.x, this.y, this.buttonWidth, height, 10);
 
+        push();
         for (let i = 0; i < this.buttonTextArray.length; i++) {
+            fill(255);
+            stroke(0);
+            strokeWeight(2);
+            textAlign(CENTER, CENTER);
+            rectMode(CORNER);
+            textSize(16);
             let buttonX = this.x;
             let buttonY = i * this.buttonHeight;
 
-            fill(255);
-            rect(buttonX + 3, buttonY + 3, this.buttonWidth - 6, this.buttonHeight - 3);
-            fill(0);
-            textAlign(CENTER, CENTER);
-            textSize(16);
-            text(this.buttonTextArray[i], buttonX + this.buttonWidth / 2, buttonY + this.buttonHeight / 2);
+            // draw button boxes, if selected draw it with different border
+            if (this.selectedCellType == this.selectableCellTypes[i]) {
+                push();
+                strokeWeight(4);
+                stroke("#6229AC");
+                rect(buttonX + 3, buttonY + 3, this.buttonWidth - 6, this.buttonHeight - 3, 10);
+                pop();
+            } else { 
+                rect(buttonX + 3, buttonY + 3, this.buttonWidth - 6, this.buttonHeight - 3, 10);
+            }
+
+            // draw the cell icon and text inside the button, Play/Pause button has different style
+            if (this.selectableCellTypes[i] != "Pause / Play") {
+                fill(this.iconColors[i]);
+                rectMode(CENTER);
+                rect(buttonX + this.buttonWidth/2, buttonY + this.buttonHeight/3, this.buttonHeight/3, this.buttonHeight/3);
+
+                fill(0);
+                noStroke();
+                text(this.buttonTextArray[i], buttonX + this.buttonWidth / 2, buttonY + this.buttonHeight / 1.3);
+            } else { // for play pause button
+                fill("#000000");
+                noStroke();
+                text(this.buttonTextArray[i], buttonX + this.buttonWidth / 2, buttonY + this.buttonHeight /2);
+            }
+
+            // draw tool tip if mouse is hovering over a button
+            rectMode(CORNER);
+            if (this.isMouseHovering(buttonX, buttonY, this.buttonWidth, this.buttonHeight)) {
+                strokeWeight(2);
+                fill("#FFFFFFF8");
+                rect(this.toolTipsX, this.toolTipsY, this.ToolTipsW, this.ToolTipsH, 10);
+                fill("#000000");
+                noStroke();
+                text(this.buttonToolTipsText[i], this.toolTipsX, this.toolTipsY, this.ToolTipsW, this.ToolTipsH);
+            }
         }
+        pop();
     }
 
     handleMouseClick() {
@@ -341,6 +395,18 @@ class SidePanel {
                 this.setSelectedType(this.selectableCellTypes[buttonIndex]);
                 console.log(this.selectedCellType + " selected");
             }
+        }
+    }
+
+    // given a position on the canvas(x,y), with a given width and h height
+    // check if mouse is hovering over the bounding square based on those parameters
+    // returns true if it is over that postion
+    // origin of bounding square is at top left
+    isMouseHovering (x, y, w, h) {
+        if (x < mouseX && mouseX < (x + w) && y < mouseY && mouseY < (y+h)){
+            return true;
+        } else {
+            return false;
         }
     }
 

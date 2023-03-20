@@ -17,8 +17,9 @@ function setup() {
 
 function draw() {
     background(220);
-    globalSidePanel.display();
+    //globalSidePanel.display();
     globalBoard.update();
+    globalSidePanel.display();
 
     drawCellHighlight();
 
