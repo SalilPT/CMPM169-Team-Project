@@ -1,6 +1,5 @@
 let globalSidePanel;
 let globalBoard;
-let updateRateSlider;
 
 let drawCellHighlight = () => {}; // anonymous function
 
@@ -11,11 +10,6 @@ function setup() {
 
     globalSidePanel = new SidePanel();
     globalBoard = new Board(width * 0.7, height * 0.98, 10, 10);
-
-    updateRateSlider = createSlider(1, 20, 10);
-    updateRateSlider.size(width / 10); // scale according to window size
-    updateRateSlider.position(width - (updateRateSlider.size().width + width / 8), height - (height / 4));
-    
 }
 
 function draw() {
@@ -25,12 +19,6 @@ function draw() {
     globalSidePanel.display();
 
     drawCellHighlight();
-
-    globalBoard.updateRate = updateRateSlider.value();
-
-    fill(255); // slider label
-    textSize(16);
-    text("Speed", updateRateSlider.position().x * 1.03, updateRateSlider.position().y * 0.95);
 }
 
 function mousePressed(event) {

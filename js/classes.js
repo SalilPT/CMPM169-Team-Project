@@ -357,12 +357,16 @@ class SidePanel {
         this.toolTipsY = this.y;
         this.ToolTipsW = this.buttonWidth*2;
         this.ToolTipsH =  this.buttonHeight*3;
+        this.bottomOfLowestButton = new p5.Vector();
+        this.SLIDER_MAX_VALUE = 30;
+        this.SLIDER_MIN_VALUE = 1;
+        this.updateRateSlider = createSlider(this.SLIDER_MIN_VALUE, this.SLIDER_MAX_VALUE, lerp(this.SLIDER_MIN_VALUE, this.SLIDER_MAX_VALUE, 0.5), 1);
+        this.updateRateSlider.size(this.buttonWidth);
     }
 
     display() {
         noStroke();
         fill(220);
-        //rect(this.x, this.y, this.buttonWidth, height, 10);
 
         for (let i = 0; i < this.buttonTextArray.length; i++) {
             fill("#A7BBEC");
@@ -377,6 +381,9 @@ class SidePanel {
             // if pause/play move it farther down
             if (this.buttonTextArray[i] == "Pause / Play") {
                 buttonY += this.buttonHeight;
+                
+                this.bottomOfLowestButton.x = buttonX + this.buttonWidth / 2; // Centered with buttons
+                this.bottomOfLowestButton.y = buttonY + this.buttonHeight;
             }
 
             // draw button boxes, if selected draw it with different border
@@ -417,6 +424,13 @@ class SidePanel {
                 text(this.buttonToolTipsText[i], this.toolTipsX, this.toolTipsY, this.ToolTipsW, this.ToolTipsH);
             }
         }
+
+        textAlign(CENTER, TOP);
+        fill(255); // slider label
+        textSize(16);
+        text("Speed", this.bottomOfLowestButton.x, this.bottomOfLowestButton.y + textSize() / 2);
+        this.updateRateSlider.position(this.bottomOfLowestButton.x - this.updateRateSlider.size().width / 2, this.bottomOfLowestButton.y + textSize() * 2);
+        globalBoard.updateRate = this.SLIDER_MAX_VALUE - this.updateRateSlider.value() + this.SLIDER_MIN_VALUE;
     }
 
     handleMouseClick() {
